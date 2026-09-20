@@ -3,6 +3,7 @@ from database import get_db
 from sqlalchemy.orm import Session
 from pos.services import sale
 from pos.schemas.sale import SaleCreate, SaleRead
+from dependencies import get_current_user
 
 router = APIRouter(prefix="/sales", tags=["sales"])
 
@@ -15,5 +16,9 @@ def get_sale(id: int, db: Session = Depends(get_db)):
     return sale.get_sale(db, id)
 
 @router.post("/", response_model=SaleRead, status_code=status.HTTP_201_CREATED)
-def create_sale(data: SaleCreate, db: Session = Depends(get_db)):
-    return sale.create_sale(db, data)
+def create_sale(
+    data: SaleCreate,
+    db: Session = Depends(get_db),
+    current_user = Depends(get_current_user),
+):
+    return sale.create_sale(db, data, current_user)

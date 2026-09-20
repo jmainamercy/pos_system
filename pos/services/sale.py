@@ -61,4 +61,10 @@ def create_sale(db: Session, data: SaleCreate, current_user: User):
         "final_amount": final_amount
     }
     
-    return sale_repository.create_sale_transaction(db, sale_header, items_to_save)
+    sale_obj = sale_repository.create_sale_transaction(db, sale_header, items_to_save)
+    # repository populates `saleitem` relationship; normalize to `items` for response model
+    try:
+        setattr(sale_obj, 'items', getattr(sale_obj, 'saleitem'))
+    except Exception:
+        pass
+    return sale_obj

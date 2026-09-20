@@ -71,6 +71,14 @@ fastapi dev
 
 The application server will listen for requests on port 8000.
 
+**Running tests (local)**
+
+- Activate the virtualenv: `source env/bin/activate` (or use your preferred venv)
+- Install dependencies: `pip install -r requirements.txt`
+- Run the full test suite: `pytest -q` or `./env/bin/python -m pytest -q`
+
+Tests use a temporary in-memory SQLite database and will not affect your development Postgres database.
+
 ## Interactive API Route Testing
 
 1. Open a browser window and navigate to the integrated OpenAPI interface page at http://127.0.0

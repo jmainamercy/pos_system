@@ -10,7 +10,7 @@ class Customer(Base):
     last_name = Column(String, nullable=False)
     phone_number = Column(String, nullable=True)
     email = Column(String, nullable=True)
-    loyalty_point = Column(Integer, nullable=False)
+    loyalty_points = Column(Integer, nullable=False, default=0)
 
     sale = relationship("Sale", back_populates="customer")
     
