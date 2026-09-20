@@ -3,7 +3,7 @@ from database import get_db
 from sqlalchemy.orm import Session
 from pos.services import user
 from pos.schemas.user import UserCreate, UserUpdate, UserRead
-from pos.core.security import RoleChecker
+from dependencies import get_current_user
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -15,7 +15,7 @@ def list_users(db: Session = Depends(get_db)):
 def get_user(id: int, db: Session = Depends(get_db)):
     return user.get_user(db, id)
 
-@router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED, dependencies=[Depends(RoleChecker(["admin"]))])
+@router.post("/", response_model=UserRead, status_code=status.HTTP_201_CREATED)
 def create_user(data: UserCreate, db: Session = Depends(get_db)):
     return user.create_user(db, data)
 

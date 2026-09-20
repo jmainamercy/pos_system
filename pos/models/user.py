@@ -1,4 +1,4 @@
-from sqlalchemy import (String, Integer, Column)
+from sqlalchemy import (String, Integer, Column, Boolean)
 from sqlalchemy.orm import relationship
 from database import Base
 
@@ -10,5 +10,6 @@ class User(Base):
     masked_password = Column(String, nullable=False)
     full_name = Column(String, nullable=False)
     role = Column(String, nullable=False)
+    is_active = Column(Boolean, nullable=False, default=True)
 
     sale = relationship("Sale", back_populates="user")

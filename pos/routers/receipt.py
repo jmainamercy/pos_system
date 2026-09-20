@@ -3,7 +3,6 @@ from database import get_db
 from sqlalchemy.orm import Session
 from pos.services import receipt as receipt_service
 from pos.schemas.receipt import ReceiptRead, ReceiptFullExport
-from pos.core.security import get_current_user
 
 router = APIRouter(prefix="/receipts", tags=["receipts"])
 
@@ -11,7 +10,6 @@ router = APIRouter(prefix="/receipts", tags=["receipts"])
 def generate_sale_receipt(
     sale_id: int, 
     db: Session = Depends(get_db), 
-    current_user=Depends(get_current_user)
 ):
     return receipt_service.issue_receipt(db, sale_id)
 
@@ -19,6 +17,5 @@ def generate_sale_receipt(
 def get_receipt_by_id(
     id: int, 
     db: Session = Depends(get_db), 
-    current_user=Depends(get_current_user)
 ):
     return receipt_service.get_receipt(db, id)

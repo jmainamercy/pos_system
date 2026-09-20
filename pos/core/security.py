@@ -1,42 +1,26 @@
+from datetime import datetime, timedelta, timezone
+from pwdlib import PasswordHash
 import jwt
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.orm import Session
-from database import get_db
-from pos.core.config import security_settings
-from pos.schemas.auth import TokenData
-from pos.repository.user import user_repository
-from pos.models.user import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)) -> User:
-    credentials_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
-        headers={"WWW-Authenticate": "Bearer"},
-    )
-    try:
-        payload = jwt.decode(token, security_settings.SECRET_KEY, algorithms=[security_settings.ALGORITHM])
-        username: str = payload.get("sub")
-        if username is None:
-            raise credentials_exception
-        token_data = TokenData(username=username)
-    except jwt.PyJWTError:
-        raise credentials_exception
-        
-    user = user_repository.get_by_username(db, username=token_data.username)
-    if user is None:
-        raise credentials_exception
-    return user
+password_hash = PasswordHash.recommended()
+jwt_secret = "change-me-to-a-secret-key-32-chars"
+jwt_algorithm= "HS256"
 
-class RoleChecker:
-    def __init__(self, allowed_roles: list[str]):
-        self.allowed_roles = allowed_roles
 
-    def __call__(self, current_user: User = Depends(get_current_user)):
-        if current_user.role not in self.allowed_roles:
-            raise HTTPException(
-                status_code=status.HTTP_403_FORBIDDEN,
-                detail="Action denied: Insufficient permission levels"
-            )
+def hash_password(password:str)->str:
+   return password_hash.hash(password)
+
+
+def verify_password(plain_passsword:str, hashed_password:str)->bool:
+   return password_hash.verify(plain_passsword,hashed_password)
+
+
+def create_access_token(id:str)-> str:
+   expire = datetime.now(timezone.utc) + timedelta(minutes = 15)
+   payload = {"sub":str(id), "exp":expire}
+   return jwt.encode(payload,jwt_secret,algorithm = jwt_algorithm)
+
+
+def decode_access_token(token:str)->dict:
+   return jwt.decode(token, jwt_secret, algorithm= [jwt_algorithm])

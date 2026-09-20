@@ -3,7 +3,6 @@ from database import get_db
 from sqlalchemy.orm import Session
 from pos.services import payment as payment_service
 from pos.schemas.payment import PaymentCreate, PaymentRead, PaymentSummary
-from pos.core.security import get_current_user
 
 router = APIRouter(prefix="/payments", tags=["payments"])
 
@@ -11,7 +10,6 @@ router = APIRouter(prefix="/payments", tags=["payments"])
 def collect_payment(
     data: PaymentCreate, 
     db: Session = Depends(get_db), 
-    current_user=Depends(get_current_user)
 ):
     return payment_service.process_payment(db, data)
 
@@ -19,6 +17,5 @@ def collect_payment(
 def check_sale_payment_status(
     sale_id: int, 
     db: Session = Depends(get_db), 
-    current_user=Depends(get_current_user)
 ):
     return payment_service.get_payment_status(db, sale_id)

@@ -6,7 +6,7 @@ class UserRepository:
         self.model = User
 
     def get(self, db: Session, id: int) -> User | None:
-        return db.get(self.model, id)
+        return db.query(self.model).filter(self.model.id==id).first()
 
     def get_by_username(self, db: Session, username: str) -> User | None:
         return db.query(self.model).filter(self.model.username == username).first()

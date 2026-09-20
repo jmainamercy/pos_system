@@ -11,6 +11,7 @@ class UserBase(BaseModel):
     )
     full_name: str = Field(..., min_length=2, max_length=100)
     role: str = Field(..., max_length=20, description="Permissions level: admin, cashier, manager")
+    is_Active:bool
 
 class UserCreate(UserBase):
     password: str = Field(
@@ -26,8 +27,10 @@ class UserUpdate(BaseModel):
     full_name: Optional[str] = Field(None, min_length=2, max_length=100)
     role: Optional[str] = Field(None, max_length=20)
     password: Optional[str] = Field(None, min_length=8, max_length=128, repr=False)
+    is_active:bool
 
 class UserRead(UserBase):
     id: int
+    is_active:bool
 
     model_config = ConfigDict(from_attributes=True)
