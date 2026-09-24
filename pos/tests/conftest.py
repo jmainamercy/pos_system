@@ -58,7 +58,7 @@ def client():
         db.execute(categories_table.insert().values(**cat_payload))
         db.execute(suppliers_table.insert().values(**sup_payload))
         db.commit()
-    except Exception as e: # noqa: BLE001
+    except Exception as e:  # noqa: BLE001
         db.rollback()
         print(f"Intelligent Seeding failed: {e}")
     finally:
