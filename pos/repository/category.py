@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
+
 from pos.models.category import Category
+
 
 class CategoryRepository:
     def __init__(self):
@@ -28,5 +30,6 @@ class CategoryRepository:
     def delete(self, db: Session, db_obj: Category):
         db.delete(db_obj)
         db.commit()
+
 
 category_repository = CategoryRepository()

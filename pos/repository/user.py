@@ -1,12 +1,14 @@
 from sqlalchemy.orm import Session
+
 from pos.models.user import User
+
 
 class UserRepository:
     def __init__(self):
         self.model = User
 
     def get(self, db: Session, id: int) -> User | None:
-        return db.query(self.model).filter(self.model.id==id).first()
+        return db.query(self.model).filter(self.model.id == id).first()
 
     def get_by_username(self, db: Session, username: str) -> User | None:
         return db.query(self.model).filter(self.model.username == username).first()
@@ -31,5 +33,6 @@ class UserRepository:
     def delete(self, db: Session, db_obj: User) -> None:
         db.delete(db_obj)
         db.commit()
+
 
 user_repository = UserRepository()

@@ -1,14 +1,17 @@
 from datetime import datetime
-from typing import Optional, List
-from pydantic import BaseModel, Field, ConfigDict
 from decimal import Decimal
+
+from pydantic import BaseModel, ConfigDict, Field
+
 
 class SaleItemBase(BaseModel):
     product_id: int
     quantity: int = Field(..., gt=0)
 
+
 class SaleItemCreate(SaleItemBase):
     pass
+
 
 class SaleItemRead(SaleItemBase):
     id: int
@@ -18,19 +21,23 @@ class SaleItemRead(SaleItemBase):
 
     model_config = ConfigDict(from_attributes=True)
 
+
 class SaleCreate(BaseModel):
-    customer_id: Optional[int] = None
-    discount: Decimal = Field(default=Decimal("0.00"), ge=0, max_digits=10, decimal_places=2)
-    items: List[SaleItemCreate] = Field(..., min_length=1)
+    customer_id: int | None = None
+    discount: Decimal = Field(
+        default=Decimal("0.00"), ge=0, max_digits=10, decimal_places=2
+    )
+    items: list[SaleItemCreate] = Field(..., min_length=1)
+
 
 class SaleRead(BaseModel):
     id: int
-    customer_id: Optional[int]
+    customer_id: int | None
     user_id: int
     sale_date: datetime
     total_amount: Decimal
     discount: Decimal
     final_amount: Decimal
-    items: List[SaleItemRead]
+    items: list[SaleItemRead]
 
     model_config = ConfigDict(from_attributes=True)

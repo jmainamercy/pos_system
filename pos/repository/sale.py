@@ -1,6 +1,8 @@
 from sqlalchemy.orm import Session
+
 from pos.models.sale import Sale
 from pos.models.sale_item import SaleItem
+
 
 class SaleRepository:
     def __init__(self):
@@ -20,9 +22,10 @@ class SaleRepository:
             item["sale_id"] = db_sale.id
             db_item = SaleItem(**item)
             db.add(db_item)
-            
+
         db.commit()
         db.refresh(db_sale)
         return db_sale
+
 
 sale_repository = SaleRepository()

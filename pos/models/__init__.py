@@ -1,9 +1,9 @@
-from .category import Category
-from .customer import Customer
-from .payment import Payment
-from .product import Product
-from .supplier import Supplier
-from .receipt import Receipt
-from .sale import Sale
-from .sale_item import SaleItem
-from .user import User
+from .category import Category as Category
+from .customer import Customer as Customer
+from .payment import Payment as Payment
+from .product import Product as Product
+from .receipt import Receipt as Receipt
+from .sale import Sale as Sale
+from .sale_item import SaleItem as SaleItem
+from .supplier import Supplier as Supplier
+from .user import User as User

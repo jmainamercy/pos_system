@@ -1,17 +1,21 @@
 from datetime import datetime
-from typing import Optional
-from pydantic import BaseModel, Field, ConfigDict
+
+from pydantic import BaseModel, ConfigDict, Field
+
 
 class CategoryBase(BaseModel):
     name: str = Field(..., max_length=100)
-    description: Optional[str] = None
+    description: str | None = None
+
 
 class CategoryCreate(CategoryBase):
     pass
 
+
 class CategoryUpdate(BaseModel):
-    name: Optional[str] = Field(None, max_length=100)
-    description: Optional[str] = None
+    name: str | None = Field(None, max_length=100)
+    description: str | None = None
+
 
 class CategoryRead(CategoryBase):
     id: int

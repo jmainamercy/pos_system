@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
+
 from pos.models.payment import Payment
+
 
 class PaymentRepository:
     def __init__(self):
@@ -17,5 +19,6 @@ class PaymentRepository:
         db.commit()
         db.refresh(db_obj)
         return db_obj
+
 
 payment_repository = PaymentRepository()

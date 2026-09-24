@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Session
+
 from pos.models.customer import Customer
+
 
 class CustomerRepository:
     def __init__(self):
@@ -28,5 +30,6 @@ class CustomerRepository:
     def delete(self, db: Session, db_obj: Customer):
         db.delete(db_obj)
         db.commit()
+
 
 customer_repository = CustomerRepository()

@@ -1,19 +1,23 @@
 import os
+from datetime import datetime, timezone
+
 import pytest
-from datetime import datetime 
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, DateTime
+from sqlalchemy import DateTime, create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 
 os.environ["DATABASE_URL"] = "sqlite://"
 
 from database import Base, get_db
+from dependencies import get_current_user
 from main import app
-from dependencies import get_current_user 
 
-engine = create_engine("sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool)
+engine = create_engine(
+    "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
+)
 TestingSessionLocal = sessionmaker(bind=engine)
+
 
 class MockUser:
     id = 1
@@ -23,37 +27,38 @@ class MockUser:
     role = "admin"
     is_active = True
 
+
 @pytest.fixture
 def client():
     Base.metadata.create_all(bind=engine)
 
     db = TestingSessionLocal()
     try:
-        categories_table = Base.metadata.tables['categories']
-        suppliers_table = Base.metadata.tables['suppliers']
+        categories_table = Base.metadata.tables["categories"]
+        suppliers_table = Base.metadata.tables["suppliers"]
 
         cat_payload = {"id": 1}
         for col in categories_table.columns:
-            if col.name == 'id':
+            if col.name == "id":
                 continue
             if isinstance(col.type, DateTime):
-                cat_payload[col.name] = datetime.utcnow()
+                cat_payload[col.name] = datetime.now(timezone.utc)
             else:
                 cat_payload[col.name] = f"Test Category {col.name}"
 
         sup_payload = {"id": 5}
         for col in suppliers_table.columns:
-            if col.name == 'id':
+            if col.name == "id":
                 continue
             if isinstance(col.type, DateTime):
-                sup_payload[col.name] = datetime.utcnow()
+                sup_payload[col.name] = datetime.now(timezone.utc)
             else:
                 sup_payload[col.name] = f"Test Supplier {col.name}"
 
         db.execute(categories_table.insert().values(**cat_payload))
         db.execute(suppliers_table.insert().values(**sup_payload))
         db.commit()
-    except Exception as e:
+    except Exception as e: # noqa: BLE001
         db.rollback()
         print(f"Intelligent Seeding failed: {e}")
     finally:
